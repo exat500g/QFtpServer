@@ -83,6 +83,8 @@ QString FtpListCommand::fileListingString(const QFileInfo &fi)
         line += (p & QFile::WriteOther) ? 'w' : '-';
         line += (p & QFile::ExeOther) ? 'x' : '-';
 
+        line += " 1 ";  //cannot get hardlink info,so force to 1
+
         // Owner/group.
         QString owner = fi.owner();
         if (owner.isEmpty()) {
@@ -117,6 +119,7 @@ void FtpListCommand::listNextBatch()
     int stop = qMin(index + 10, list->size());
     while (index < stop) {
         QString line = fileListingString(list->at(index));
+        qDebug()<<"line:"<<line;
         socket->write(line.toUtf8());
         index++;
     }
